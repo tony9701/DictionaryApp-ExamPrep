@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class RegisterUserDTO {
 
     @Size(min = 3, max = 20)

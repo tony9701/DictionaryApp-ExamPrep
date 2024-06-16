@@ -1,5 +1,6 @@
 package com.dictionaryapp.controller;
 
+import com.dictionaryapp.model.dto.LoginUserDTO;
 import com.dictionaryapp.model.dto.RegisterUserDTO;
 import com.dictionaryapp.service.UserService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ public class UserController {
 
     private UserService userService;
 
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -24,6 +26,11 @@ public class UserController {
     @ModelAttribute("registerData")
     public RegisterUserDTO registerUserDTO() {
         return new RegisterUserDTO();
+    }
+
+    @ModelAttribute("loginData")
+    public LoginUserDTO loginUserDTO() {
+        return new LoginUserDTO();
     }
 
     @GetMapping("/register")
@@ -48,4 +55,36 @@ public class UserController {
 
         return "redirect:/login";
     }
+
+    @GetMapping("/login")
+    public String viewLogin(Model model) {
+
+        return "/login";
+    }
+
+    @PostMapping("/login")
+    public String doLogin(@Valid LoginUserDTO loginUserDTO,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("loginData", loginUserDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginData", bindingResult);
+
+
+            return "redirect:/login";
+        }
+
+        boolean success = userService.login(loginUserDTO);
+
+        if (!success) {
+            redirectAttributes.addFlashAttribute("loginData", loginUserDTO);
+            redirectAttributes.addFlashAttribute("usernameOrPassMissMatch", true);
+
+            return "redirect:/login";
+        }
+
+        return "redirect:/home";
+    }
+
 }
