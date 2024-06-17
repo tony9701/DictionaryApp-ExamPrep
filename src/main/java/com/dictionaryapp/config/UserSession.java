@@ -7,7 +7,7 @@ import org.springframework.web.context.annotation.SessionScope;
 @Component
 @SessionScope
 public class UserSession {
-    private Long id;
+    private long id;
 
     private String username;
 
@@ -17,4 +17,17 @@ public class UserSession {
         this.id = user.getId();
     }
 
+    public boolean isLoggedIn() {
+        return this.id != 0;
+    }
+
+
+    public void logout() {
+        id = 0;
+        username = "";
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }
